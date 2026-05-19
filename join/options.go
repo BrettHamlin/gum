@@ -5,6 +5,7 @@ type Options struct {
 	Text []string `arg:"" help:"Text to join."`
 
 	Align      string `help:"Text alignment" enum:"left,center,right,bottom,middle,top" default:"left"`
+	Separator  string `short:"s" help:"Separator to insert between joined text" default:""`
 	Horizontal bool   `help:"Join (potentially multi-line) strings horizontally"`
 	Vertical   bool   `help:"Join (potentially multi-line) strings vertically"`
 }
