@@ -7,4 +7,5 @@ type Options struct {
 	Align      string `help:"Text alignment" enum:"left,center,right,bottom,middle,top" default:"left"`
 	Horizontal bool   `help:"Join (potentially multi-line) strings horizontally"`
 	Vertical   bool   `help:"Join (potentially multi-line) strings vertically"`
+	Separator  string `help:"Separator to insert between each text value" default:""`
 }
