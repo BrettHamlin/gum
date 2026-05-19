@@ -108,8 +108,10 @@ type Gum struct {
 	// For example, you can place two bordered boxes next to each other:
 	// Note: We wrap the variable in quotes to ensure the new lines are part of a
 	// single argument. Otherwise, the command won't work as expected.
+	// Use --separator to place text between each joined value.
 	//
 	// $ gum join --horizontal "$BUBBLE_BOX" "$GUM_BOX"
+	// $ gum join --separator " " "$BUBBLE_BOX" "$GUM_BOX"
 	//
 	//   ╔══════════════════════╗╔═════════════╗
 	//   ║                      ║║             ║

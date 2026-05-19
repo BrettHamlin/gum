@@ -328,14 +328,16 @@ build layouts and pretty output.
 Tip: Always wrap the output of `gum style` in quotes to preserve newlines
 (`\n`) when using it as an argument in the `join` command.
 
+Use `--separator` to place text between each joined value.
+
 ```bash
 I=$(gum style --padding "1 5" --border double --border-foreground 212 "I")
 LOVE=$(gum style --padding "1 4" --border double --border-foreground 57 "LOVE")
 BUBBLE=$(gum style --padding "1 8" --border double --border-foreground 255 "Bubble")
 GUM=$(gum style --padding "1 5" --border double --border-foreground 240 "Gum")
 
-I_LOVE=$(gum join "$I" "$LOVE")
-BUBBLE_GUM=$(gum join "$BUBBLE" "$GUM")
+I_LOVE=$(gum join --separator " " "$I" "$LOVE")
+BUBBLE_GUM=$(gum join --separator " " "$BUBBLE" "$GUM")
 gum join --align center --vertical "$I_LOVE" "$BUBBLE_GUM"
 ```
 
