@@ -156,6 +156,9 @@ func TestJoinCLIEmptySeparatorMatchesDefault(t *testing.T) {
 	if emptyStderr != "" {
 		t.Fatalf("expected empty separator invocation stderr to be empty, got %q", emptyStderr)
 	}
+	if emptyOut != "leftright\n" {
+		t.Fatalf("expected empty separator stdout to preserve legacy bytes, got %q", emptyOut)
+	}
 	if emptyOut != defaultOut {
 		t.Fatalf("expected empty separator stdout %q to match default stdout %q", emptyOut, defaultOut)
 	}
