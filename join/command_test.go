@@ -34,9 +34,12 @@ func TestMain(m *testing.M) {
 
 //harness:criterion=c-join-separator-flag-exists,c-join-options-separator-field
 func TestSeparatorFlagExistsInHelpAndRuns(t *testing.T) {
-	stdout, stderr := runGum(t, "join", "--separator= | ", "foo", "bar")
-	if got := shellOutput(stdout); got == "" {
-		t.Fatalf("expected output when --separator is supplied, stderr=%q", stderr)
+	stdout, stderr := runGum(t, "join", "--separator=::<*>", "foo", "bar")
+	if stderr != "" {
+		t.Fatalf("expected empty stderr when --separator is supplied, got %q", stderr)
+	}
+	if got, want := shellOutput(stdout), "foo::<*>bar"; got != want {
+		t.Fatalf("expected arbitrary separator value to be accepted:\ngot:  %q\nwant: %q", got, want)
 	}
 
 	help, _ := runGum(t, "join", "--help")

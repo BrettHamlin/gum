@@ -17,6 +17,7 @@ package join
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/charmbracelet/lipgloss"
 
@@ -39,6 +40,31 @@ func (o Options) Run() error {
 			text = append(text, value)
 		}
 	}
+	if o.Vertical && o.Separator != "" && len(o.Text) > 1 {
+		fmt.Println(joinVerticalWithSeparator(decode.Align[o.Align], text))
+		return nil
+	}
 	fmt.Println(join(decode.Align[o.Align], text...))
 	return nil
+}
+
+func joinVerticalWithSeparator(pos lipgloss.Position, text []string) string {
+	maxWidth := 0
+	for _, value := range text {
+		if width := lipgloss.Width(value); width > maxWidth {
+			maxWidth = width
+		}
+	}
+
+	style := lipgloss.NewStyle().Width(maxWidth).Align(pos)
+	blocks := make([]string, 0, len(text))
+	for i, value := range text {
+		if i%2 == 1 {
+			blocks = append(blocks, value)
+			continue
+		}
+		blocks = append(blocks, style.Render(value))
+	}
+
+	return strings.Join(blocks, "\n")
 }
