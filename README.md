@@ -337,6 +337,8 @@ GUM=$(gum style --padding "1 5" --border double --border-foreground 240 "Gum")
 I_LOVE=$(gum join "$I" "$LOVE")
 BUBBLE_GUM=$(gum join "$BUBBLE" "$GUM")
 gum join --align center --vertical "$I_LOVE" "$BUBBLE_GUM"
+
+gum join --separator " | " "Bubble" "Gum" "Pop"
 ```
 
 <img src="https://github.com/charmbracelet/gum/assets/42545625/68f7a25d-b495-48dd-982a-cee0c8ea5786" width="600" alt="I LOVE Bubble Gum written out in four boxes with double borders around them." />
