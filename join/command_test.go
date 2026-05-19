@@ -4,12 +4,12 @@ import (
 	"bytes"
 	"io"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"reflect"
 	"strings"
 	"testing"
 
+	"github.com/alecthomas/kong"
 	"github.com/charmbracelet/lipgloss"
 )
 
@@ -98,22 +98,44 @@ func TestSeparatorDefaultsToEmptyString(t *testing.T) {
 
 func TestSeparatorDoesNotAffectOperandBlockDimensions(t *testing.T) {
 	//harness:criterion=c-separator-does-not-affect-lipgloss-block-dimensions
-	out := strings.TrimSuffix(runJoin(t, Options{Text: []string{"hello", "world"}, Align: "left", Separator: "|"}), "\n")
-	parts := strings.Split(out, "|")
-	if len(parts) != 2 {
-		t.Fatalf("expected two operand blocks split by separator, got %q", out)
+	left := "hello\nthere"
+	right := "world"
+
+	out := runJoin(t, Options{Text: []string{left, right}, Align: "left", Separator: "|"})
+	expected := lipgloss.JoinHorizontal(lipgloss.Left, left, "|", right)
+	if out != expected {
+		t.Fatalf("expected separator to be joined as its own block:\nwant %q\ngot  %q", expected, out)
 	}
 
-	for i, want := range []string{"hello", "world"} {
-		if parts[i] != want {
-			t.Fatalf("expected operand block %d to remain %q, got %q", i, want, parts[i])
+	lines := strings.Split(out, "\n")
+	leftWidth := lipgloss.Width(left)
+	leftHeight := lipgloss.Height(left)
+	if len(lines) < leftHeight {
+		t.Fatalf("expected at least %d rendered lines, got %d in %q", leftHeight, len(lines), out)
+	}
+	leftLines := make([]string, 0, leftHeight)
+	for i := 0; i < leftHeight; i++ {
+		if len(lines[i]) < leftWidth {
+			t.Fatalf("line %d too short to contain left operand block: %q", i, lines[i])
 		}
-		if lipgloss.Width(parts[i]) != lipgloss.Width(want) {
-			t.Fatalf("expected operand block %d width %d, got %d", i, lipgloss.Width(want), lipgloss.Width(parts[i]))
+		leftLines = append(leftLines, lines[i][:leftWidth])
+	}
+	if got := strings.Join(leftLines, "\n"); got != left {
+		t.Fatalf("expected left operand block to remain %q, got %q", left, got)
+	}
+
+	rightWidth := lipgloss.Width(right)
+	rightHeight := lipgloss.Height(right)
+	rightOffset := leftWidth + lipgloss.Width("|")
+	rightLines := make([]string, 0, rightHeight)
+	for i := 0; i < rightHeight; i++ {
+		if len(lines[i]) < rightOffset+rightWidth {
+			t.Fatalf("line %d too short to contain right operand block: %q", i, lines[i])
 		}
-		if lipgloss.Height(parts[i]) != lipgloss.Height(want) {
-			t.Fatalf("expected operand block %d height %d, got %d", i, lipgloss.Height(want), lipgloss.Height(parts[i]))
-		}
+		rightLines = append(rightLines, lines[i][rightOffset:rightOffset+rightWidth])
+	}
+	if got := strings.Join(rightLines, "\n"); got != right {
+		t.Fatalf("expected right operand block to remain %q, got %q", right, got)
 	}
 }
 
@@ -138,6 +160,20 @@ func TestSeparatorFlagIsExposed(t *testing.T) {
 	if !strings.Contains(separatorLine, "--separator") {
 		t.Fatalf("expected Separator field line to include the --separator Kong flag/help text, got %q", separatorLine)
 	}
+
+	var cli struct {
+		Join Options `cmd:""`
+	}
+	parser, err := kong.New(&cli)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := parser.Parse([]string{"join", "--separator", ",", "a", "b"}); err != nil {
+		t.Fatal(err)
+	}
+	if cli.Join.Separator != "," {
+		t.Fatalf("expected --separator flag to populate Options.Separator, got %q", cli.Join.Separator)
+	}
 }
 
 func TestReadmeDocumentsSeparator(t *testing.T) {
@@ -153,15 +189,19 @@ func TestReadmeDocumentsSeparator(t *testing.T) {
 
 func TestUnknownSeparatorFlagRejected(t *testing.T) {
 	//harness:criterion=c-unknown-flag-rejected
-	cmd := exec.Command("go", "run", ".", "join", "--separatr", ",")
-	cmd.Dir = filepath.Join("..")
-
-	out, err := cmd.CombinedOutput()
+	var cli struct {
+		Join Options `cmd:""`
+	}
+	parser, err := kong.New(&cli)
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, err = parser.Parse([]string{"join", "--separatr", ","})
 	if err == nil {
-		t.Fatalf("expected misspelled flag to fail, got success with output %q", out)
+		t.Fatal("expected misspelled flag to fail")
 	}
 
-	message := string(out)
+	message := err.Error()
 	if !strings.Contains(message, "--separatr") &&
 		!strings.Contains(strings.ToLower(message), "unknown flag") &&
 		!strings.Contains(strings.ToLower(message), "unexpected flag") {

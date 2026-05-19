@@ -17,6 +17,7 @@ package join
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/charmbracelet/lipgloss"
 
@@ -25,6 +26,12 @@ import (
 
 // Run is the command-line interface for the joining strings through lipgloss.
 func (o Options) Run() error {
+	align := decode.Align[o.Align]
+	if o.Vertical && o.Separator != "" && len(o.Text) > 1 {
+		fmt.Print(joinVerticalWithSeparator(align, o.Separator, o.Text))
+		return nil
+	}
+
 	join := lipgloss.JoinHorizontal
 	if o.Vertical {
 		join = lipgloss.JoinVertical
@@ -41,6 +48,25 @@ func (o Options) Run() error {
 		}
 	}
 
-	fmt.Println(join(decode.Align[o.Align], text...))
+	fmt.Print(join(align, text...))
 	return nil
+}
+
+func joinVerticalWithSeparator(pos lipgloss.Position, separator string, text []string) string {
+	maxWidth := 0
+	for _, t := range text {
+		if width := lipgloss.Width(t); width > maxWidth {
+			maxWidth = width
+		}
+	}
+
+	blocks := make([]string, 0, len(text)*2-1)
+	for i, t := range text {
+		if i > 0 {
+			blocks = append(blocks, separator)
+		}
+		blocks = append(blocks, lipgloss.PlaceHorizontal(maxWidth, pos, t))
+	}
+
+	return strings.Join(blocks, "\n")
 }
