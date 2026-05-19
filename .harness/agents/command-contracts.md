@@ -42,6 +42,11 @@ scope at warning/error severity when the reviewed diff supports them.
   validation errors, exit codes, and help text.
 - Script-facing output stays stable and machine-readable when the command is
   likely to be used in pipes or automation.
+- Default behavior is part of the command contract. Treat existing stdout and
+  stderr bytes as public script-facing API unless the diff or task explicitly
+  shows an intentional default-behavior change. Byte-level changes including
+  trailing newlines, delimiters, ordering, or default formatting are blocking
+  when they break scripts.
 - Errors go to stderr, successful command output goes to stdout, and exit codes
   distinguish success, user error, cancellation, and internal failures.
 - Flag names, aliases, defaults, and environment-variable behavior do not
@@ -56,7 +61,9 @@ scope at warning/error severity when the reviewed diff supports them.
   prompts into script output, or changes an existing flag/exit-code contract in
   a way that breaks automation.
 - **D/error:** a new command or flag accepts unsafe input, emits success output
-  on stderr/stdout incorrectly, or lacks validation for a common invalid input.
+  on stderr/stdout incorrectly, lacks validation for a common invalid input, or
+  regresses an existing command's default stdout/stderr bytes without an
+  explicit intentional default-behavior change.
 - **C/warning:** minor help text, output consistency, or narrow test coverage
   gap.
 - **A:** no command-contract concerns in the diff.

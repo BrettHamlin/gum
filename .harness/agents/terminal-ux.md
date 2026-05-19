@@ -47,6 +47,11 @@ severity when the reviewed diff supports them.
   handling where applicable.
 - Output remains readable on narrow terminals and does not mix decorative UI
   with machine-readable command output.
+- Default script-facing output is a terminal UX contract. Treat existing stdout
+  and stderr bytes as public script-facing API unless the diff or task
+  explicitly shows an intentional default-behavior change. Byte-level changes
+  including trailing newlines, delimiters, ordering, or default formatting are
+  blocking when they break scripts.
 - Long-running commands provide useful feedback without swallowing command
   errors or hiding stderr that users need to debug.
 - Tests or examples cover the user-visible terminal behavior introduced by the
@@ -58,7 +63,9 @@ severity when the reviewed diff supports them.
   subprocess while returning success, or writes terminal control output into a
   machine-readable stream.
 - **D/error:** a new prompt lacks cancellation/error handling, a TTY-only path
-  runs in CI/scripts, or styling makes required output unreadable.
+  runs in CI/scripts, styling makes required output unreadable, or an existing
+  command's default stdout/stderr bytes regress without an explicit intentional
+  default-behavior change.
 - **C/warning:** minor help text, formatting, accessibility, or narrow test
   coverage gap.
 - **A:** no terminal UX concerns in the diff.
