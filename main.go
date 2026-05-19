@@ -10,6 +10,7 @@ import (
 	"github.com/alecthomas/kong"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/gum/internal/exit"
+	"github.com/charmbracelet/gum/join"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/muesli/termenv"
 )
@@ -53,6 +54,7 @@ func main() {
 			Summary:             false,
 			NoExpandSubcommands: true,
 		}),
+		kong.NamedMapper("separator", join.SeparatorMapper{}),
 		kong.Vars{
 			"version":                 version,
 			"versionNumber":           Version,

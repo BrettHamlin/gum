@@ -37,7 +37,7 @@ func TestOptionsSeparatorField(t *testing.T) {
 }
 
 func TestJoin(t *testing.T) {
-	//harness:criterion=c-horizontal-no-separator-unchanged,c-vertical-no-separator-unchanged,c-horizontal-separator-interleaved,c-vertical-separator-interleaved,c-separator-not-appended-trailing,c-multichar-separator-supported,c-single-value-no-separator-inserted,c-run-interleaves-before-lipgloss,c-separator-default-is-empty,c-horizontal-default-mode-separator
+	//harness:criterion=c-horizontal-no-separator-unchanged,c-vertical-no-separator-unchanged,c-horizontal-separator-interleaved,c-vertical-separator-interleaved,c-separator-not-appended-trailing,c-multichar-separator-supported,c-single-value-no-separator-inserted,c-empty-separator-is-noop,c-run-interleaves-before-lipgloss,c-separator-default-is-empty,c-horizontal-default-mode-separator
 	for name, tt := range map[string]struct {
 		criteria []string
 		args     []string
@@ -72,6 +72,11 @@ func TestJoin(t *testing.T) {
 			criteria: []string{"c-single-value-no-separator-inserted"},
 			args:     []string{"--horizontal", "--separator", "|", "A"},
 			want:     "A",
+		},
+		"empty_separator_noop": {
+			criteria: []string{"c-empty-separator-is-noop"},
+			args:     []string{"--horizontal", "--separator", "", "A", "B", "C"},
+			want:     "ABC",
 		},
 		"default_mode_with_separator": {
 			criteria: []string{"c-horizontal-default-mode-separator"},

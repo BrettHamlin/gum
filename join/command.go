@@ -17,6 +17,7 @@ package join
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/charmbracelet/lipgloss"
 
@@ -39,6 +40,18 @@ func (o Options) Run() error {
 			text = append(text, t)
 		}
 	}
-	fmt.Println(join(decode.Align[o.Align], text...))
+	output := join(decode.Align[o.Align], text...)
+	if o.Vertical && o.Separator != "" {
+		output = trimRightPadding(output)
+	}
+	fmt.Println(output)
 	return nil
+}
+
+func trimRightPadding(s string) string {
+	lines := strings.Split(s, "\n")
+	for i := range lines {
+		lines[i] = strings.TrimRight(lines[i], " ")
+	}
+	return strings.Join(lines, "\n")
 }
