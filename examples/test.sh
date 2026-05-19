@@ -29,6 +29,7 @@ gum input --password --prompt "Password: " --placeholder "hunter2" --prompt.fore
 # Join
 gum join "Horizontal" "Join"
 gum join --vertical "Vertical" "Join"
+gum join --separator " | " "Separated" "Join"
 
 # Spin
 gum spin -- sleep 1

@@ -339,6 +339,13 @@ BUBBLE_GUM=$(gum join "$BUBBLE" "$GUM")
 gum join --align center --vertical "$I_LOVE" "$BUBBLE_GUM"
 ```
 
+Use `--separator` (`GUM_JOIN_SEPARATOR`) to insert a delimiter between joined
+values:
+
+```bash
+gum join --horizontal --separator " | " "left" "middle" "right"
+```
+
 <img src="https://github.com/charmbracelet/gum/assets/42545625/68f7a25d-b495-48dd-982a-cee0c8ea5786" width="600" alt="I LOVE Bubble Gum written out in four boxes with double borders around them." />
 
 ## Format
