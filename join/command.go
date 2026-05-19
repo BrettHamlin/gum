@@ -17,6 +17,7 @@ package join
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/charmbracelet/lipgloss"
 
@@ -31,9 +32,17 @@ func (o Options) Run() error {
 	}
 	text := o.Text
 	if o.Separator != "" {
-		text = intersperse(text, o.Separator)
+		separator := o.Separator
+		if !o.Vertical {
+			separator = horizontalSeparator(text, separator)
+		}
+		text = intersperse(text, separator)
 	}
-	fmt.Println(join(decode.Align[o.Align], text...))
+	output := join(decode.Align[o.Align], text...)
+	if o.Vertical && o.Separator != "" {
+		output = trimTrailingLineSpaces(output)
+	}
+	fmt.Println(output)
 	return nil
 }
 
@@ -50,4 +59,34 @@ func intersperse(values []string, separator string) []string {
 		text = append(text, value)
 	}
 	return text
+}
+
+func horizontalSeparator(values []string, separator string) string {
+	if lipgloss.Height(separator) != 1 {
+		return separator
+	}
+
+	height := 1
+	for _, value := range values {
+		if h := lipgloss.Height(value); h > height {
+			height = h
+		}
+	}
+	if height == 1 {
+		return separator
+	}
+
+	lines := make([]string, height)
+	for i := range lines {
+		lines[i] = separator
+	}
+	return strings.Join(lines, "\n")
+}
+
+func trimTrailingLineSpaces(value string) string {
+	lines := strings.Split(value, "\n")
+	for i, line := range lines {
+		lines[i] = strings.TrimRight(line, " ")
+	}
+	return strings.Join(lines, "\n")
 }

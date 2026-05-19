@@ -180,7 +180,14 @@ func TestReadmeDocumentsJoinSeparatorFlag(t *testing.T) {
 	if !strings.Contains(joinSection, "GUM_JOIN_SEPARATOR") {
 		t.Fatalf("expected README join section to document GUM_JOIN_SEPARATOR, got:\n%s", joinSection)
 	}
-	if !strings.Contains(joinSection, "gum join") || !strings.Contains(joinSection, "--separator") {
+	hasUsageExample := false
+	for _, line := range strings.Split(joinSection, "\n") {
+		if strings.Contains(line, "gum join") && strings.Contains(line, "--separator") {
+			hasUsageExample = true
+			break
+		}
+	}
+	if !hasUsageExample {
 		t.Fatalf("expected README join section to include a gum join --separator usage example, got:\n%s", joinSection)
 	}
 }
