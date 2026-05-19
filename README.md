@@ -323,7 +323,8 @@ gum style \
 ## Join
 
 Combine text vertically or horizontally. Use this command with `gum style` to
-build layouts and pretty output.
+build layouts and pretty output. Pass `--separator` (`-s`) to insert delimiter
+text between joined values.
 
 Tip: Always wrap the output of `gum style` in quotes to preserve newlines
 (`\n`) when using it as an argument in the `join` command.

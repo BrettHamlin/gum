@@ -17,6 +17,7 @@ package join
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/charmbracelet/lipgloss"
 
@@ -29,6 +30,23 @@ func (o Options) Run() error {
 	if o.Vertical {
 		join = lipgloss.JoinVertical
 	}
-	fmt.Println(join(decode.Align[o.Align], o.Text...))
+
+	text := o.Text
+	if o.Separator != "" && len(o.Text) > 1 {
+		text = make([]string, 0, len(o.Text)*2-1)
+		for i, value := range o.Text {
+			if i > 0 {
+				text = append(text, o.Separator)
+			}
+			text = append(text, value)
+		}
+	}
+
+	if o.Vertical && o.Align == "left" {
+		fmt.Println(strings.Join(text, "\n"))
+		return nil
+	}
+
+	fmt.Println(join(decode.Align[o.Align], text...))
 	return nil
 }
