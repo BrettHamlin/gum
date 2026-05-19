@@ -110,6 +110,7 @@ type Gum struct {
 	// single argument. Otherwise, the command won't work as expected.
 	//
 	// $ gum join --horizontal "$BUBBLE_BOX" "$GUM_BOX"
+	// $ gum join --horizontal --separator " " "$BUBBLE_BOX" "$GUM_BOX"
 	//
 	//   ╔══════════════════════╗╔═════════════╗
 	//   ║                      ║║             ║
