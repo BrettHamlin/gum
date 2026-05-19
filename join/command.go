@@ -29,6 +29,18 @@ func (o Options) Run() error {
 	if o.Vertical {
 		join = lipgloss.JoinVertical
 	}
-	fmt.Println(join(decode.Align[o.Align], o.Text...))
+
+	text := o.Text
+	if o.Separator != "" {
+		text = make([]string, 0, len(o.Text)*2)
+		for i, value := range o.Text {
+			if i > 0 {
+				text = append(text, o.Separator)
+			}
+			text = append(text, value)
+		}
+	}
+
+	fmt.Println(join(decode.Align[o.Align], text...))
 	return nil
 }
