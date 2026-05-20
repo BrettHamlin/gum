@@ -86,8 +86,16 @@ func TestJoinSeparatorStdoutContract(t *testing.T) {
 			args: []string{"--separator", "", "a", "b", "c"},
 			want: "abc\n",
 		},
+		"horizontal empty separator equals syntax": {
+			args: []string{"--separator=", "a", "b", "c"},
+			want: "abc\n",
+		},
 		"vertical empty separator": {
 			args: []string{"--vertical", "--separator", "", "a", "b", "c"},
+			want: "a\nb\nc\n",
+		},
+		"vertical empty separator equals syntax": {
+			args: []string{"--vertical", "--separator=", "a", "b", "c"},
 			want: "a\nb\nc\n",
 		},
 		"horizontal with separator": {
