@@ -20,6 +20,14 @@ Additional context:
 
 {{CONTEXT}}
 
+## Join command contract
+
+`gum join` joins text horizontally by default and vertically with `--vertical`.
+The `--separator` flag defaults to `""` and may also be set with
+`GUM_JOIN_SEPARATOR`. When non-empty, the separator is emitted in stdout exactly
+between adjacent joined values, with no leading or trailing separator and with
+the command's single trailing newline preserved.
+
 ## Scope note
 
 This diff may be one progressive-review cluster from a larger PR. Do not mark

@@ -17,6 +17,7 @@ package join
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/charmbracelet/lipgloss"
 
@@ -29,6 +30,40 @@ func (o Options) Run() error {
 	if o.Vertical {
 		join = lipgloss.JoinVertical
 	}
-	fmt.Println(join(decode.Align[o.Align], o.Text...))
+	text := o.Text
+	if o.Separator != "" && len(o.Text) > 1 {
+		text = make([]string, 0, len(o.Text)*2-1)
+		for i, t := range o.Text {
+			if i > 0 {
+				text = append(text, o.Separator)
+			}
+			text = append(text, t)
+		}
+		if o.Vertical {
+			fmt.Println(joinVerticalWithSeparator(decode.Align[o.Align], o.Separator, o.Text...))
+			return nil
+		}
+	}
+	fmt.Println(join(decode.Align[o.Align], text...))
 	return nil
+}
+
+func joinVerticalWithSeparator(pos lipgloss.Position, separator string, text ...string) string {
+	width := 0
+	for _, t := range text {
+		if w := lipgloss.Width(t); w > width {
+			width = w
+		}
+	}
+
+	var b strings.Builder
+	for i, t := range text {
+		if i > 0 {
+			b.WriteRune('\n')
+			b.WriteString(separator)
+			b.WriteRune('\n')
+		}
+		b.WriteString(lipgloss.PlaceHorizontal(width, pos, t))
+	}
+	return b.String()
 }
