@@ -328,6 +328,14 @@ build layouts and pretty output.
 Tip: Always wrap the output of `gum style` in quotes to preserve newlines
 (`\n`) when using it as an argument in the `join` command.
 
+Use `--separator` to insert a delimiter between adjacent values. The default is
+`""`, so omitting the flag preserves the existing joined output.
+
+```bash
+gum join --separator "," a b c
+gum join --vertical --separator "---" a b
+```
+
 ```bash
 I=$(gum style --padding "1 5" --border double --border-foreground 212 "I")
 LOVE=$(gum style --padding "1 4" --border double --border-foreground 57 "LOVE")
